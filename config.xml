@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget xmlns="http://www.w3.org/ns/widgets" id="https://addons.opera.com/addons/extensions/details/firebug-lite/" version="1.0">
+  <name>Firebug Lite</name>
+  <icon src="firebug128.png"/>
+  <description xml:lang="en">Firebug Lite is an alternative to using Opera Dragonfly. Firebug Lite provides the rich visual representation we are used to see in Firebug when it comes to HTML elements, DOM elements, and Box Model shading. It provides also some cool features like inspecting HTML elements with your mouse, and live editing CSS properties.</description>
+</widget>

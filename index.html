@@ -1,0 +1,97 @@
+<html>
+<head>
+<script type="text/javascript">
+// Add Firebug Popup Button
+var UIItemProperties = { // options for the button
+   disabled: false,
+   title: "Firebug Lite",
+   icon: "firebug24_disabled.png"
+}
+var firebugBtn = opera.contexts.toolbar.createItem( UIItemProperties ); // create the button
+firebugBtn.addEventListener( 'click', function() {
+	var tab = opera.extension.tabs.getFocused();
+	if(tab) {
+		tab.postMessage({
+			action: 'toggleFirebug'
+		});
+	}
+}, false);
+opera.contexts.toolbar.addItem( firebugBtn ); // add button to UI
+
+function urlparse( str )
+{
+    var arr = str.split('#');
+ 
+    var result = new Array();
+    var ctr=0;
+    for( var part in arr )
+    {
+        var qindex = part.indexOf('?');
+        result[ctr] = {};
+        if( qindex==-1 )
+        {
+            result[ctr].mid=part;
+            result[ctr].args = [];
+            ctr++;
+            continue;
+        }
+        result[ctr].mid = part.substring(0,qindex);
+        var args = part.substring(qindex+1);
+        args = args.split('&');
+        var localctr = 0;
+        result[ctr].args = new Array();
+        for( var val in args )
+        {
+            var keyval = val.split('=');
+            result[ctr].args[localctr] = new Object();
+            result[ctr].args[localctr].key = keyval[0];
+            result[ctr].args[localctr].value = keyval[1];
+            localctr++;
+        }
+        ctr++;
+    }
+    return result;
+}
+
+function getSitePreference( ) {
+	var tab = opera.extension.tabs.getFocused();
+	if(tab) {
+		var urlParts = urlparse( tab.url );
+		for(var i in urlParts) opera.postError( urlParts[ i ]);
+		return localStorage.getItem(urlParts[0]) || false;	
+	}
+}
+function setSitePreference( status ) {
+	var tab = opera.extension.tabs.getFocused();
+	if(tab) {
+		var urlParts = urlparse( tab.url );
+		for(var i in urlParts) opera.postError( urlParts[ i ]);
+		localStorage.setItem(urlParts[0], status);	
+	}
+}
+
+opera.extension.addEventListener( 'message', function( msg ) {
+	if(msg.data.action !== 'updateStatus' || msg.data.action !== 'load') return;
+	
+	if(msg.data.action == 'load') {
+		var isActive = getSitePreference();
+		if(isActive == '1') {
+			msg.source.postMessage({
+				action: 'autoRun',
+			});
+		}
+	} else if(msg.data.action == 'updateStatus') {
+      	// Set the correct popup button
+      	if(msg.data.status == '1') {
+      		firebugBtn.icon = "firebug24.png";
+      	} else {
+      		firebugBtn.icon = "firebug24_disabled.png";
+      	}
+      	setSitePreference(msg.data.status);
+	}
+}, false);
+</script>
+</head>
+<body>
+</body>
+</html>
