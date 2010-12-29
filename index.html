@@ -66,12 +66,13 @@ function setSitePreference( status ) {
 	if(tab) {
 		var urlParts = urlparse( tab.url );
 		for(var i in urlParts) opera.postError( urlParts[ i ]);
-		localStorage.setItem(urlParts[0], status);	
+		localStorage.setItem(urlParts[0], status);
+		opera.postError('Preference ' + urlParts[0] + " = " + status);
 	}
 }
 
 opera.extension.addEventListener( 'message', function( msg ) {
-	if(msg.data.action !== 'updateStatus' || msg.data.action !== 'load') return;
+	if(msg.data.action !== 'updateStatus' && msg.data.action !== 'load') return;
 	
 	if(msg.data.action == 'load') {
 		var isActive = getSitePreference();
